@@ -2,6 +2,7 @@ import app from "./app";
 import { info, error } from "./utils/logger";
 import redisClient from "./services/redis.client";
 import { config } from "./config";
+import { initializeWebSocketConnection } from "./services/webSocket.service";
 
 const port = config.PORT;
 
@@ -10,6 +11,9 @@ const startServer = async () => {
     // Attempt to connect to Redis
     await redisClient.ping();
     info("Connected to Redis successfully");
+
+    // Initialize WebSocket connection after successful Redis connection
+    initializeWebSocketConnection();
 
     // Start listening for requests after successful Redis connection
     app.listen(port, () => {

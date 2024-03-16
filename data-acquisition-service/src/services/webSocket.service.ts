@@ -3,12 +3,13 @@ import WebSocket from "ws";
 import { processData } from "../utils/processData";
 import { config } from "../config";
 import { cacheData } from "./cache.service";
+import { info, error } from "../utils/logger";
 
 export function initializeWebSocketConnection(): void {
   const ws = new WebSocket(config.WEB_SOCKET_URL);
 
   ws.on("open", () => {
-    console.log("WebSocket connection established");
+    info("WebSocket connection established");
   });
 
   ws.on("message", async (data) => {
@@ -19,8 +20,8 @@ export function initializeWebSocketConnection(): void {
     // Perform other actions with the processed data
   });
 
-  ws.on("error", (error) => {
-    console.error("WebSocket error:", error);
+  ws.on("error", (err) => {
+    error("WebSocket error:", err);
     // Handle WebSocket errors
   });
 

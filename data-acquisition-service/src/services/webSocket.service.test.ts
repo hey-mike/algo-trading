@@ -1,36 +1,59 @@
+// webSocket.service.test.ts
 import WebSocket from "ws";
-import { connectToMarketDataStream } from "./webSocket.service";
+import { initializeWebSocketConnection } from "./webSocket.service";
 import { processData } from "../utils/processData";
-import { config } from "../config";
+import { cacheData } from "./cache.service";
 
 jest.mock("ws");
-jest.mock("../utils/processData");
+jest.mock("./processData");
+jest.mock("./cache.service");
 
 describe("WebSocket Service", () => {
-  afterEach(() => {
-    jest.clearAllMocks();
+  let mockWebSocket: WebSocket;
+
+  beforeEach(() => {
+    mockWebSocket = new WebSocket("ws://localhost");
+    (WebSocket as jest.Mock).mockImplementation(() => mockWebSocket);
+    (processData as jest.Mock).mockReturnValue({
+      symbol: "BTCUSDT",
+      tradeId: 123,
+    });
+    (cacheData as jest.Mock).mockResolvedValue(undefined);
   });
 
-  it("should connect to Binance WebSocket and process data", () => {
-    const symbol = "BTCUSDT";
-    const mockData = { e: "trade" };
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
 
-    connectToMarketDataStream(symbol);
+  it("should establish WebSocket connection and handle incoming messages", () => {
+    initializeWebSocketConnection();
 
     expect(WebSocket).toHaveBeenCalledWith(
-      `${config.BINANCE_WS_URL}/${symbol}`
+      "wss://stream.binance.com:9443/ws/btcusdt@trade"
     );
 
-    const mockWebSocketInstance = (
-      WebSocket as jest.MockedClass<typeof WebSocket>
-    ).mock.instances[0];
-    const messageCallback = (
-      mockWebSocketInstance.on as jest.MockInstance<any, any>
-    ).mock.calls[0][1];
-    messageCallback(JSON.stringify(mockData));
+    const onOpenCallback = (mockWebSocket.on as jest.Mock).mock.calls[0][1];
+    onOpenCallback();
+    expect(console.log).toHaveBeenCalledWith(
+      "WebSocket connection established"
+    );
 
-    expect(processData).toHaveBeenCalledWith(JSON.stringify(mockData));
+    const onMessageCallback = (mockWebSocket.on as jest.Mock).mock.calls[1][1];
+    const mockData = JSON.stringify({ symbol: "BTCUSDT", tradeId: 123 });
+    onMessageCallback(mockData);
+    expect(processData).toHaveBeenCalledWith(JSON.parse(mockData));
+    expect(cacheData).toHaveBeenCalledWith(
+      { symbol: "BTCUSDT", tradeId: 123 },
+      "processed_data_BTCUSDT_123"
+    );
+
+    const onErrorCallback = (mockWebSocket.on as jest.Mock).mock.calls[2][1];
+    const mockError = new Error("WebSocket error");
+    onErrorCallback(mockError);
+    expect(console.error).toHaveBeenCalledWith("WebSocket error:", mockError);
+
+    const onCloseCallback = (mockWebSocket.on as jest.Mock).mock.calls[3][1];
+    onCloseCallback();
+    expect(console.log).toHaveBeenCalledWith("WebSocket connection closed");
   });
-
-  // Add more test cases for error scenarios and edge cases
 });
