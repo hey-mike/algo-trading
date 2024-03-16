@@ -26,7 +26,7 @@ export function initializeWebSocketConnection(): void {
   });
 
   ws.on("close", () => {
-    console.log("WebSocket connection closed");
+    info("WebSocket connection closed");
     // Handle WebSocket connection closure
   });
 }
