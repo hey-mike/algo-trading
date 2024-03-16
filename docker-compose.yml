@@ -12,11 +12,15 @@ services:
       - ./data-acquisition-service:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - "5000:5000"
+      - "6000:6000"
     environment:
-      - REDIS_HOST=redis://redis:6379
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
       - NODE_ENV=development
     command: npm run dev
+    depends_on:
+      - redis
 
   # trading-strategy-service:
   #   build: ./trading-strategy-service
@@ -40,7 +44,10 @@ services:
       # - trading-strategy-service
       # - order-execution-service
     environment:
-      - REDIS_HOST=redis://redis:6379
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - NODE_ENV=development
       - DATA_ACQUISITION_SERVICE_URL=http://data-acquisition-service:5000
 
   # client-app:

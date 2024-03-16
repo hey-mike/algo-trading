@@ -13,8 +13,7 @@ export function initializeWebSocketConnection(): void {
   });
 
   ws.on("message", async (data) => {
-    const parsedData = JSON.parse(data.toString());
-    const processedData = processData(parsedData);
+    const processedData = processData(data.toString());
     const cacheKey = `processed_data_${processedData.symbol}_${processedData.tradeId}`;
     await cacheData(processedData, cacheKey);
     // Perform other actions with the processed data

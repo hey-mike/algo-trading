@@ -1,6 +1,6 @@
 // src/controllers/dataController.ts
 import { Request, Response } from "express";
-import { fetchData } from "../services/dataService";
+import { fetchData } from "../services/data.service";
 
 export const getData = async (req: Request, res: Response) => {
   try {

@@ -1,6 +1,6 @@
 // src/app.ts
 import express from "express";
-import apiRoutes from "./routes/apiRoutes";
+import apiRoutes from "./routes/api.route";
 
 const app = express();
 
