@@ -1,27 +1,25 @@
-# Use the official Node.js 14 image as a parent image
+# Use a specific version of the Node.js image that matches your development environment.
 FROM node:18
 
-# Set the working directory inside the container
+# Set the working directory in the container.
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the working directory
+# Copy package.json and package-lock.json (if available) to the working directory.
 COPY package*.json ./
 
-# Install dependencies in the container
+# Install all dependencies including 'devDependencies' since they are needed for local development.
 RUN npm install
 
-# If you are building your code for production
-# RUN npm ci --only=production
+# If you have native dependencies, use 'npm rebuild' here to ensure the binaries are built for the correct architecture.
 
-# Bundle your app's source code inside the Docker image
+# Copy the source code of your service to the container.
 COPY . .
 
-# If your service uses a build step, you can run it here. E.g.:
-# RUN npm run build
+# Run the TypeScript compiler to build the project.
+RUN npm run build
 
-# Inform Docker that the container listens on the specified port at runtime.
+# Expose the port that your service listens on.
 EXPOSE 5000
 
-# Define the command to run your app using CMD which defines your runtime
-# Here we will use node command
-CMD [ "node", "src/index.js" ]
+# Use the "start" script as defined in your package.json to run the service.
+CMD ["npm", "run", "start"]
