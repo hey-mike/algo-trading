@@ -32,16 +32,20 @@ services:
     build: ./client-service
     ports:
       - "5003:5003"
+    volumes:
+      - ./client-service:/usr/src/app
+    command: npm run dev
     depends_on:
       - data-acquisition-service
-      - trading-strategy-service
-      - order-execution-service
+      # - trading-strategy-service
+      # - order-execution-service
     environment:
       - REDIS_HOST=redis://redis:6379
+      - DATA_ACQUISITION_SERVICE_URL=http://data-acquisition-service:5000
 
-  client-app:
-    build: ./client-app
-    ports:
-      - "3000:3000"
-    depends_on:
-      - client-service
+  # client-app:
+  #   build: ./client-app
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - client-service
