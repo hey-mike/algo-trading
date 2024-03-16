@@ -1,14 +1,23 @@
-// src/index.ts
+import app from "./app";
+import { info, error } from "./utils/logger";
+import redisClient from "./services/CacheService"; // Adjust this path based on where you placed your redisClient file
 
-import app from "./app"; // Import the Express app
-import { log, info, warn, error } from "./utils/logger";
+const port = process.env.PORT || 3000;
 
-// Start the server
-const port = process.env.PORT || 3000; // Use environment variable or default
+const startServer = async () => {
+  try {
+    // Attempt to connect to Redis
+    await redisClient.ping();
+    info("Connected to Redis successfully");
 
-// Additional setup (optional)
-// You can add pre-startup tasks here (e.g., database connection)
+    // Start listening for requests after successful Redis connection
+    app.listen(port, () => {
+      info(`Data Acquisition Service running on http://localhost:${port}`);
+    });
+  } catch (err) {
+    error("Failed to connect to Redis:", err);
+    process.exit(1); // Exit if cannot connect to Redis
+  }
+};
 
-app.listen(port, () => {
-  info(`Data Acquisition Service running on http://localhost:${port}`);
-});
+startServer();
