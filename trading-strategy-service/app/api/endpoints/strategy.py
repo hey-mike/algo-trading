@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from app.models.schemas import StrategyRequest  # Import the model
 from app.services import strategy_service
 
 router = APIRouter()

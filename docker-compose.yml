@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
+  data-acquisition-service:
+    build: ./data-acquisition-service
+    ports:
+      - "5000:5000"
+    environment:
+      - REDIS_HOST=redis://redis:6379
+
+  trading-strategy-service:
+    build: ./trading-strategy-service
+    ports:
+      - "5001:5001"
+
+  order-execution-service:
+    build: ./order-execution-service
+    ports:
+      - "5002:5002"
+
+  client-api:
+    build: ./client-api
+    ports:
+      - "5003:5003"
+    depends_on:
+      - data-acquisition-service
+      - trading-strategy-service
+      - order-execution-service
+    environment:
+      - REDIS_HOST=redis://redis:6379
+
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - client-api
