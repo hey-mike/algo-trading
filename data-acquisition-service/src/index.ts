@@ -1,22 +1,12 @@
-import express from 'express';
-import { fetchMarketData } from './services/ApiService';
-import { connectToMarketDataStream } from './services/WebSocketService';
+// src/index.ts
 
-const app = express();
-const port = 3000;
+import app from './app'; // Import the Express app
 
-// Example route using ApiService
-app.get('/market-data/:symbol', async (req, res) => {
-  try {
-    const data = await fetchMarketData(req.params.symbol);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch market data' });
-  }
-});
+// Start the server
+const port = process.env.PORT || 3000; // Use environment variable or default
 
-// Example WebSocket connection
-connectToMarketDataStream('btcusdt@trade');
+// Additional setup (optional)
+// You can add pre-startup tasks here (e.g., database connection)
 
 app.listen(port, () => {
   console.log(`Data Acquisition Service running on http://localhost:${port}`);
