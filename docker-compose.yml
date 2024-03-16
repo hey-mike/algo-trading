@@ -18,15 +18,15 @@ services:
       - NODE_ENV=development
     command: npm run dev
 
-  trading-strategy-service:
-    build: ./trading-strategy-service
-    ports:
-      - "5001:5001"
+  # trading-strategy-service:
+  #   build: ./trading-strategy-service
+  #   ports:
+  #     - "5001:5001"
 
-  order-execution-service:
-    build: ./order-execution-service
-    ports:
-      - "5002:5002"
+  # order-execution-service:
+  #   build: ./order-execution-service
+  #   ports:
+  #     - "5002:5002"
 
   client-service:
     build: ./client-service
@@ -39,9 +39,9 @@ services:
     environment:
       - REDIS_HOST=redis://redis:6379
 
-  client:
-    build: ./client
+  client-app:
+    build: ./client-app
     ports:
       - "3000:3000"
     depends_on:
-      - client-api
+      - client-service
