@@ -16,7 +16,7 @@ app.get('/market-data/:symbol', async (req, res) => {
 });
 
 // Example WebSocket connection
-connectToMarketDataStream('btcusdt');
+connectToMarketDataStream('btcusdt@trade');
 
 app.listen(port, () => {
   console.log(`Data Acquisition Service running on http://localhost:${port}`);
