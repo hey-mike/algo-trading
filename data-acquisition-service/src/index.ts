@@ -1,8 +1,9 @@
 import app from "./app";
 import { info, error } from "./utils/logger";
-import redisClient from "./services/CacheService"; // Adjust this path based on where you placed your redisClient file
+import redisClient from "./services/redis.client";
+import { config } from "./config";
 
-const port = process.env.PORT || 3000;
+const port = config.PORT;
 
 const startServer = async () => {
   try {
