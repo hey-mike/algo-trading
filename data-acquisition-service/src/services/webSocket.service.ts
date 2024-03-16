@@ -1,22 +1,31 @@
+// webSocket.service.ts
 import WebSocket from "ws";
-import { config } from "../config";
 import { processData } from "../utils/processData";
-import { log, info, warn, error } from "../utils/logger";
+import { config } from "../config";
 import { cacheData } from "./cache.service";
 
-export const connectToMarketDataStream = (symbol: string): void => {
-  const ws = new WebSocket(`${config.BINANCE_WS_URL}/${symbol}`);
+export function initializeWebSocketConnection(): void {
+  const ws = new WebSocket(config.WEB_SOCKET_URL);
 
   ws.on("open", () => {
-    info("Connected to Binance WebSocket");
+    console.log("WebSocket connection established");
   });
 
   ws.on("message", async (data) => {
-    const processedData = processData(data.toString());
-    await cacheData(processedData); // Cache the processed data
+    const parsedData = JSON.parse(data.toString());
+    const processedData = processData(parsedData);
+    const cacheKey = `processed_data_${processedData.symbol}_${processedData.tradeId}`;
+    await cacheData(processedData, cacheKey);
+    // Perform other actions with the processed data
   });
 
-  ws.on("error", (err) => {
-    error("WebSocket error:", err);
+  ws.on("error", (error) => {
+    console.error("WebSocket error:", error);
+    // Handle WebSocket errors
   });
-};
+
+  ws.on("close", () => {
+    console.log("WebSocket connection closed");
+    // Handle WebSocket connection closure
+  });
+}

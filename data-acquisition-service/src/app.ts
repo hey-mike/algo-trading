@@ -1,20 +1,20 @@
 import express from "express";
 import { fetchMarketData } from "./services/api.service";
 import { connectToMarketDataStream } from "./services/webSocket.service";
+import { errorHandler } from "./utils/errorHandler";
 
 const app = express();
 
-// Example route using ApiService
-app.get("/market-data/:symbol", async (req, res) => {
-  try {
-    const data = await fetchMarketData(req.params.symbol);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch market data" });
-  }
-});
+// Middleware
+app.use(express.json());
+
+// Routes
+app.get("/market-data/:symbol", fetchMarketData);
 
 // Example WebSocket connection
 connectToMarketDataStream("btcusdt@trade");
+
+// Centralized Error Handling Middleware
+app.use(errorHandler);
 
 export default app;
