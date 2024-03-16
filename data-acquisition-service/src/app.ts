@@ -3,7 +3,6 @@ import { fetchMarketData } from './services/ApiService';
 import { connectToMarketDataStream } from './services/WebSocketService';
 
 const app = express();
-const port = 3000;
 
 // Example route using ApiService
 app.get('/market-data/:symbol', async (req, res) => {
