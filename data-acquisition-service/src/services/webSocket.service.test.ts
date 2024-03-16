@@ -21,8 +21,12 @@ describe("WebSocket Service", () => {
       `${config.BINANCE_WS_URL}/${symbol}`
     );
 
-    const mockWebSocketInstance = WebSocket.mock.instances[0];
-    const messageCallback = mockWebSocketInstance.on.mock.calls[1][1];
+    const mockWebSocketInstance = (
+      WebSocket as jest.MockedClass<typeof WebSocket>
+    ).mock.instances[0];
+    const messageCallback = (
+      mockWebSocketInstance.on as jest.MockInstance<any, any>
+    ).mock.calls[0][1];
     messageCallback(JSON.stringify(mockData));
 
     expect(processData).toHaveBeenCalledWith(JSON.stringify(mockData));

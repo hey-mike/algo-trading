@@ -11,8 +11,9 @@ export const connectToMarketDataStream = (symbol: string): void => {
     info("Connected to Binance WebSocket");
   });
 
-  ws.on("message", (data) => {
-    processData(data.toString()); // Implement your own logic to process the data
+  ws.on("message", async (data) => {
+    const processedData = processData(data.toString());
+    await cacheData(processedData); // Cache the processed data
   });
 
   ws.on("error", (err) => {
