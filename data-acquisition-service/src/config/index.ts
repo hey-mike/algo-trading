@@ -22,4 +22,5 @@ export const config = {
 
   // REST API configuration
   REST_API_URL: process.env.REST_API_URL,
+  RABBITMQ_HOST: process.env.RABBITMQ_HOST || "amqp://localhost",
 };

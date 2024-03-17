@@ -13,6 +13,7 @@ services:
       - REDIS_PORT=6379
       - REDIS_DB=0
       - NODE_ENV=development
+      - RABBITMQ_HOST=rabbitmq
     command: npm run dev
     depends_on:
       - redis
@@ -36,6 +37,7 @@ services:
       - "5003:5003"
     volumes:
       - ./trading-bot-server:/usr/src/app
+      - /app/node_modules
     command: npm run dev
     depends_on:
       - data-acquisition-service

@@ -4,6 +4,7 @@ import { processData } from "../utils/processData";
 import { config } from "../config";
 import { cacheData } from "./cache.service";
 import { info, error } from "../utils/logger";
+import { rabbitMQPublisher } from "./rabbitMQPublisher.service";
 
 export function initializeWebSocketConnection(): void {
   const ws = new WebSocket(config.WEB_SOCKET_URL);
@@ -13,10 +14,15 @@ export function initializeWebSocketConnection(): void {
   });
 
   ws.on("message", async (data) => {
-    const processedData = processData(data.toString());
-    const cacheKey = `processed_data_${processedData.symbol}_${processedData.tradeId}`;
-    await cacheData(processedData, cacheKey);
+    const marketData = processData(data.toString());
+    const cacheKey = `processed_data_${marketData.symbol}_${marketData.tradeId}`;
+    await cacheData(marketData, cacheKey);
     // Perform other actions with the processed data
+    try {
+      await rabbitMQPublisher.publish(marketData);
+    } catch (error) {
+      console.error("Failed to publish market data", error);
+    }
   });
 
   ws.on("error", (err) => {
