@@ -1,11 +1,6 @@
 version: "3.8"
 
 services:
-  redis:
-    image: "redis:alpine"
-    ports:
-      - "6379:6379"
-
   data-acquisition-service:
     build: ./data-acquisition-service
     volumes:
@@ -21,6 +16,9 @@ services:
     command: npm run dev
     depends_on:
       - redis
+      - rabbitmq
+    networks:
+      - backend-network
 
   # trading-strategy-service:
   #   build: ./trading-strategy-service
@@ -49,6 +47,8 @@ services:
       - REDIS_DB=0
       - NODE_ENV=development
       - DATA_ACQUISITION_SERVICE_URL=http://data-acquisition-service:5000
+    networks:
+      - backend-network
 
   # client-app:
   #   build: ./client-app
@@ -56,3 +56,7 @@ services:
   #     - "3000:3000"
   #   depends_on:
   #     - client-service
+
+networks:
+  backend-network:
+    name: backend-network
