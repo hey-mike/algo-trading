@@ -45,6 +45,8 @@ services:
       - data-acquisition-service
       # - trading-strategy-service
       # - order-execution-service
+      - redis
+      - rabbitmq
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379

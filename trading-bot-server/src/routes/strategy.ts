@@ -1,6 +1,7 @@
 // routes/strategy.ts
 import express, { Request, Response } from "express";
 import axios from "axios";
+import { config } from "../config";
 
 const router = express.Router();
 
