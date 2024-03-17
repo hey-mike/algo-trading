@@ -9,7 +9,7 @@ export const cacheData = async (
 ): Promise<void> => {
   try {
     await redis.set(key, JSON.stringify(data), "EX", expirationTime);
-    info(`Data cached successfully with key: ${key}`);
+    // info(`Data cached successfully with key: ${key}`);
   } catch (err) {
     error("Error caching data:", err);
     throw err;

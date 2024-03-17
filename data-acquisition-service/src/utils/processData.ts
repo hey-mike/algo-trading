@@ -27,9 +27,9 @@ export const processData = (data: string): TradeData => {
   };
 
   // Example: Log the normalized data
-  info(
-    `Trade for ${normalizedData.symbol}: ${normalizedData.quantity} @ ${normalizedData.price}`
-  );
+  // info(
+  //   `Trade for ${normalizedData.symbol}: ${normalizedData.quantity} @ ${normalizedData.price}`
+  // );
 
   // Here, you could add additional logic, such as storing the data in a database or further processing.
 

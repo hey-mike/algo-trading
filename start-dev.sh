@@ -23,7 +23,12 @@ create_network() {
 # Function to start all services together
 start_all_services() {
     echo "Starting all services..."
-    docker-compose -f $INFRA_COMPOSE_FILE -f $APP_COMPOSE_FILE up -d
+    docker-compose -f $INFRA_COMPOSE_FILE -f $APP_COMPOSE_FILE up -d --build
+}
+# Function to tail logs from application services only
+tail_app_logs() {
+    echo "Tailing logs from application services..."
+ docker-compose -f $INFRA_COMPOSE_FILE -f $APP_COMPOSE_FILE logs -f
 }
 
 # Main script execution
@@ -32,5 +37,8 @@ create_network
 
 # 2. Start all services together
 start_all_services
+
+tail_app_logs
+
 
 echo "All services have been started."

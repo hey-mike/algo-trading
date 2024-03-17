@@ -50,12 +50,15 @@ services:
     networks:
       - backend-network
 
-  # client-app:
-  #   build: ./client-app
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - client-service
+  client-app:
+    build: ./client-app
+    volumes:
+      - ./client-app:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - client-service
 
 networks:
   backend-network:
