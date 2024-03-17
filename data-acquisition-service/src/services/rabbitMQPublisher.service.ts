@@ -1,6 +1,7 @@
 import amqp from "amqplib";
 import { config } from "../config"; // Ensure this points to your actual config file
 import { info, error } from "../utils/logger";
+import { MarketData } from "../types/MarketData";
 
 class RabbitMQPublisher {
   private channel: amqp.Channel | null = null;
@@ -8,7 +9,7 @@ class RabbitMQPublisher {
   private isConnected: boolean = false;
 
   constructor(
-    private url: string = `amqp://${config.RABBITMQ_HOST}`,
+    private url: string = config.RABBITMQ_HOST,
     private exchange: string = "marketData",
     private exchangeType: string = "topic"
   ) {
@@ -26,26 +27,57 @@ class RabbitMQPublisher {
       });
       this.isConnected = true;
 
-      this.connection.on("close", () => {
-        console.error("RabbitMQ connection closed. Attempting to reconnect...");
+      this.connection.on("close", async () => {
+        error("RabbitMQ connection closed. Attempting to reconnect...");
         this.isConnected = false;
         this.channel = null;
         this.connection = null;
-        setTimeout(() => this.ensureConnection(), 1000); // Retry connection after a delay
+        await this.retryConnection();
       });
 
       this.connection.on("error", (err) => {
-        console.error("RabbitMQ connection error:", err);
+        error("RabbitMQ connection error:", err);
         this.isConnected = false;
       });
     } catch (err) {
-      info(`Connecting to RabbitMQ URL: ${this.url}`);
-      console.error("Failed to connect to RabbitMQ:", err);
-      setTimeout(() => this.ensureConnection(), 1000); // Retry connection after a delay
+      error("Failed to connect to RabbitMQ:", err);
+      error("RabbitMQ URL:", this.url);
+      await this.retryConnection();
+    }
+  }
+  private async retryConnection(retryCount: number = 1): Promise<void> {
+    const retryDelay = Math.pow(2, retryCount) * 1000; // Exponential backoff
+    const maxRetries = 5;
+
+    try {
+      await this.ensureConnection();
+    } catch (err) {
+      if (retryCount < maxRetries) {
+        error(
+          `Retrying RabbitMQ connection in ${retryDelay}ms (attempt ${
+            retryCount + 1
+          })`
+        );
+        setTimeout(() => this.retryConnection(retryCount + 1), retryDelay);
+      } else {
+        error("Max retry attempts reached. Unable to connect to RabbitMQ.");
+        throw err;
+      }
     }
   }
 
-  public async publish(data: any): Promise<void> {
+  public async shutdown(): Promise<void> {
+    if (this.channel) {
+      await this.channel.close();
+    }
+    if (this.connection) {
+      await this.connection.close();
+    }
+    this.isConnected = false;
+    info("RabbitMQ connection closed.");
+  }
+
+  public async publish(data: MarketData): Promise<void> {
     await this.ensureConnection();
 
     if (!this.channel) {
@@ -62,14 +94,18 @@ class RabbitMQPublisher {
           persistent: true,
         }
       );
-      console.info(
-        `Published data to ${this.exchange} exchange with routing key ${routingKey}`
-      );
+      //   info(
+      //     `Published data to ${this.exchange} exchange with routing key ${routingKey}`
+      //   );
     } catch (err) {
-      console.error("Error publishing message:", err);
+      error("Error publishing message:", err);
       throw err; // Re-throw to allow caller to handle the error
     }
   }
 }
 
-export const rabbitMQPublisher = new RabbitMQPublisher();
+export const rabbitMQPublisher = new RabbitMQPublisher(
+  config.RABBITMQ_URL,
+  config.RABBITMQ_EXCHANGE,
+  config.RABBITMQ_EXCHANGE_TYPE
+);

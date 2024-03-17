@@ -22,5 +22,8 @@ export const config = {
 
   // REST API configuration
   REST_API_URL: process.env.REST_API_URL,
-  RABBITMQ_HOST: process.env.RABBITMQ_HOST || "amqp://localhost",
+  RABBITMQ_HOST: process.env.RABBITMQ_HOST || "localhost",
+  RABBITMQ_URL: `amqp://${process.env.RABBITMQ_HOST}`,
+  RABBITMQ_EXCHANGE: "market_data",
+  RABBITMQ_EXCHANGE_TYPE: "topic",
 };

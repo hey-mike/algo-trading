@@ -19,7 +19,7 @@ COPY . .
 RUN npm run build
 
 # Expose the port that your service listens on.
-EXPOSE 5000
+EXPOSE 6000
 
 # Use the "start" script as defined in your package.json to run the service.
 CMD ["npm", "run", "start"]

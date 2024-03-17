@@ -1,21 +1,11 @@
 import { log, info, warn, error } from "./logger";
-
-interface TradeData {
-  eventType: string;
-  eventTime: number;
-  symbol: string;
-  price: string;
-  quantity: string;
-  tradeId: number;
-  isBuyerMaker: boolean;
-  tradeTime: number;
-}
+import { MarketData } from "../types/MarketData";
 
 // Function to process and normalize trade data received from Binance WebSocket
-export const processData = (data: string): TradeData => {
+export const processData = (data: string): MarketData => {
   const rawData = JSON.parse(data);
 
-  const normalizedData: TradeData = {
+  const normalizedData: MarketData = {
     eventType: rawData.e,
     eventTime: rawData.E,
     symbol: rawData.s,
@@ -30,8 +20,6 @@ export const processData = (data: string): TradeData => {
   // info(
   //   `Trade for ${normalizedData.symbol}: ${normalizedData.quantity} @ ${normalizedData.price}`
   // );
-
-  // Here, you could add additional logic, such as storing the data in a database or further processing.
 
   return normalizedData;
 };

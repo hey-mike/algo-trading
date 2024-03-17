@@ -2,7 +2,9 @@ version: "3.8"
 
 services:
   data-acquisition-service:
-    build: ./data-acquisition-service
+    build:
+      context: ./data-acquisition-service
+      dockerfile: Dockerfile.dev
     volumes:
       - ./data-acquisition-service:/usr/src/app
       - /usr/src/app/node_modules
