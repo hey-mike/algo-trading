@@ -20,7 +20,10 @@ export async function connectToRabbitMQ() {
       config.RABBITMQ_ORDER_STATUS_ROUTING_KEY
     );
 
-    console.log("Connected to RabbitMQ");
+    console.log(
+      "Trading Bot Server connected to RabbitMQ",
+      config.RABBITMQ_URL
+    );
 
     // Return the channel for other modules to use
     return channel;

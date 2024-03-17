@@ -3,7 +3,6 @@ import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import jwt from "jsonwebtoken";
 import { config } from "./config";
 import { errorHandler } from "./middlewares/errorHandler";
 import { dataProxyRouter } from "./routes/dataProxy";

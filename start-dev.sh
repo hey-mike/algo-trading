@@ -3,7 +3,7 @@
 # Define your network and Docker Compose files
 NETWORK_NAME="backend-network"
 INFRA_COMPOSE_FILE="docker-compose.infra.yml"
-APP_COMPOSE_FILE="docker-compose.yml"
+APP_COMPOSE_FILE="docker-compose.dev.yml"
 
 # Function to check if the Docker network exists
 network_exists() {

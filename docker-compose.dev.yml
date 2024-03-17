@@ -17,7 +17,7 @@ services:
       - NODE_ENV=development
       - RABBITMQ_HOST=rabbitmq
     command: npm run dev
-    depends_on:
+    depends_on: #it doesn't guarantee RabbitMQ is ready to accept connections.
       - redis
       - rabbitmq
     networks:
@@ -39,19 +39,21 @@ services:
       - "5003:5003"
     volumes:
       - ./trading-bot-server:/usr/src/app
-      - /app/node_modules
+      - /usr/src/app/node_modules
     command: npm run dev
     depends_on:
+      - redis
+      - rabbitmq
       - data-acquisition-service
       # - trading-strategy-service
       # - order-execution-service
-      - redis
-      - rabbitmq
+
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_DB=0
       - NODE_ENV=development
+      - RABBITMQ_HOST=rabbitmq
       - DATA_ACQUISITION_SERVICE_URL=http://data-acquisition-service:5000
     networks:
       - backend-network
