@@ -4,7 +4,7 @@ import { processData } from "../utils/processData";
 import { config } from "../config";
 import { cacheData } from "./cache.service";
 import { info, error } from "../utils/logger";
-import { rabbitMQPublisher } from "./rabbitMQPublisher.service";
+import { rabbitMQPublisher } from "./rabbitMQ.publisher";
 
 export function initializeWebSocketConnection(): void {
   const ws = new WebSocket(config.WEB_SOCKET_URL);

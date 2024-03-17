@@ -1,50 +1,46 @@
-import winston from 'winston';
-
+import winston, { Logger, format } from "winston";
 
 // Define Log Levels as an Enum for type safety and clarity
 enum LogLevel {
+  DEBUG = "debug",
   INFO = "info",
   WARN = "warn",
   ERROR = "error",
 }
 
-const logger = winston.createLogger({
-  level: 'info', // Set minimum log level (configurable if needed)
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json(), // Structured logs (optional)
-    winston.format.prettyPrint()
+// Create a custom Winston logger instance
+const logger: Logger = winston.createLogger({
+  level: process.env.NODE_ENV === "production" ? LogLevel.INFO : LogLevel.DEBUG,
+  format: format.combine(
+    format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    format.errors({ stack: true }),
+    format.splat(),
+    format.json()
   ),
+  defaultMeta: { service: "my-service" },
   transports: [
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize({ all: true }), // Enable color for all logs
-        winston.format.printf(({ level, message, label, timestamp }) => {
-        //   const color = colors[log.level as LogLevel];
-        //   const message = color ? color(log.message) : log.message; // Apply color based on level
-        //   console.log()
-        return `${timestamp} ${level}: ${message}`;
-        }),
+      format: format.combine(
+        format.colorize(),
+        format.printf(({ level, message, timestamp, ...meta }) => {
+          const metaData = Object.keys(meta).length ? JSON.stringify(meta) : "";
+          return `${timestamp} [${level}]: ${message} ${metaData}`;
+        })
       ),
     }),
+    new winston.transports.File({
+      filename: "logs/error.log",
+      level: LogLevel.ERROR,
+    }),
+    new winston.transports.File({ filename: "logs/combined.log" }),
   ],
 });
+const customLogger = {
+  ...logger,
+  debug: (message: string, meta?: any) => logger.debug(message, meta),
+  info: (message: string, meta?: any) => logger.info(message, meta),
+  warn: (message: string, meta?: any) => logger.warn(message, meta),
+  error: (message: string, meta?: any) => logger.error(message, meta),
+};
 
-// Improved log function to handle type mismatch and structured logs
-export function log(level: LogLevel, message: string | object, meta?: any): void {
-    const logMessage = typeof message === 'string' ? message : JSON.stringify(message);
-  logger.log(level, logMessage, meta);
-}
-
-// Optional helper functions for specific log levels (improves readability)
-export function info(message: string | object, meta?: any): void {
-  log(LogLevel.INFO, message, meta);
-}
-
-export function warn(message: string | object, meta?: any): void {
-  log(LogLevel.WARN, message, meta);
-}
-
-export function error(message: string | object, meta?: any): void {
-  log(LogLevel.ERROR, message, meta);
-}
+export default customLogger;

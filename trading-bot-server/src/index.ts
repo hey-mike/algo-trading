@@ -1,42 +1,37 @@
-// trading-bot-server/src/index.ts
+// app.ts
+import express, { Application } from "express";
 import http from "http";
-import app from "./app";
-import { info, error } from "./utils/logger";
+import { WebSocketService } from "./services/websocket.service";
+import { RabbitMQConsumer } from "./services/rabbitMQ.consumer";
 import { config } from "./config";
-import { setupWebSocketServer } from "./services/socket.server";
-import {
-  connectToRabbitMQ,
-  closeRabbitMQConnection,
-} from "./services/mq.service";
+import logger from "./utils/logger";
 
-const startServer = async () => {
-  try {
-    const httpServer = http.createServer(app);
-    const io = setupWebSocketServer(httpServer);
+const app: Application = express();
 
-    connectToRabbitMQ()
-      .then(() => {
-        // Start the server
-        const server = app.listen(config.PORT, () => {
-          console.log(`Trading Bot Server is running on port ${config.PORT}`);
-        });
-        setupWebSocketServer(server);
-      })
-      .catch((error) => {
-        console.error("Failed to start the server:", error);
-        process.exit(1);
-      });
-  } catch (err) {
-    error("Failed to connect to Redis:", err);
-    process.exit(1); // Exit if cannot connect to Redis
-  }
-};
+// Middleware and route setup
+// ...
 
-startServer();
+const server = http.createServer(app);
+const webSocketService = new WebSocketService(server);
+const rabbitMQConsumer = new RabbitMQConsumer(webSocketService);
+
+// Connect to RabbitMQ
+rabbitMQConsumer
+  .connect()
+  .then(() => {
+    // Start the server
+    server.listen(config.PORT, () => {
+      logger.info(`Trading Bot Server is running on port ${config.PORT}`);
+    });
+  })
+  .catch((error) => {
+    error("Failed to start the server:", error);
+    process.exit(1);
+  });
 
 // Graceful shutdown
 process.on("SIGINT", async () => {
-  console.log("Shutting down the server...");
-  await closeRabbitMQConnection();
+  logger.info("Shutting down the server...");
+  await rabbitMQConsumer.disconnect();
   process.exit(0);
 });

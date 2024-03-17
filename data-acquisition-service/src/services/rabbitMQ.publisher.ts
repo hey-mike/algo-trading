@@ -114,7 +114,7 @@ class RabbitMQPublisher {
     }
 
     try {
-      const routingKey = `market_data.${data.symbol}`;
+      const routingKey = `${this.exchange}.${data.symbol}`;
       this.channel.publish(
         this.exchange,
         routingKey,
@@ -124,7 +124,11 @@ class RabbitMQPublisher {
         }
       );
       // info(
-      //   `Published data to ${this.exchange} exchange with routing key ${routingKey}`
+      //   `Published data to ${
+      //     this.exchange
+      //   } exchange with routing key ${routingKey} ${Buffer.from(
+      //     JSON.stringify(data)
+      //   )}`
       // );
     } catch (err) {
       error("Error publishing message:", err);

@@ -15,6 +15,7 @@ export const config = {
   },
   RABBITMQ_HOST: process.env.RABBITMQ_HOST || "localhost",
   RABBITMQ_URL: `amqp://${process.env.RABBITMQ_HOST}`,
+  RABBITMQ_MARKET_EXCHANGE: "market_data",
   RABBITMQ_ORDER_EXCHANGE: "order_status",
   RABBITMQ_EXCHANGE_TYPE: "topic",
   RABBITMQ_ORDER_STATUS_ROUTING_KEY: "order.status.*",
