@@ -1,4 +1,4 @@
-// client-service/src/socketServer.ts
+// trading-bot-server/src/socketServer.ts
 import { Server as SocketIOServer } from "socket.io";
 import { io as Client } from "socket.io-client";
 

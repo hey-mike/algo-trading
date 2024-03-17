@@ -1,4 +1,4 @@
-// client-service/src/index.ts
+// trading-bot-server/src/index.ts
 import http from "http";
 import app from "./app";
 import { setupWebSocketServer } from "./services/socket.server";

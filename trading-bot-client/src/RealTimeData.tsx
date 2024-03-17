@@ -1,4 +1,4 @@
-// client-app/src/components/RealTimeData.tsx
+// trading-bot-client/src/components/RealTimeData.tsx
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 

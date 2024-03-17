@@ -30,12 +30,12 @@ services:
   #   ports:
   #     - "5002:5002"
 
-  client-service:
-    build: ./client-service
+  trading-bot-server:
+    build: ./trading-bot-server
     ports:
       - "5003:5003"
     volumes:
-      - ./client-service:/usr/src/app
+      - ./trading-bot-server:/usr/src/app
     command: npm run dev
     depends_on:
       - data-acquisition-service
@@ -50,15 +50,15 @@ services:
     networks:
       - backend-network
 
-  client-app:
-    build: ./client-app
+  trading-bot-client:
+    build: ./trading-bot-client
     volumes:
-      - ./client-app:/app
+      - ./trading-bot-client:/app
       - /app/node_modules
     ports:
       - "3000:3000"
     depends_on:
-      - client-service
+      - trading-bot-server
 
 networks:
   backend-network:
