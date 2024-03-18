@@ -1,4 +1,5 @@
 import pika, json
+from app.core.config import settings
 
 class RabbitMQPublisher:
     def __init__(self, amqp_url: str):
@@ -11,4 +12,4 @@ class RabbitMQPublisher:
                                    routing_key='trade_signal',
                                    body=json.dumps(signal))
 
-rabbitmq_publisher = RabbitMQPublisher('your_amqp_url')
+rabbitmq_publisher = RabbitMQPublisher(settings.RABBITMQ_URL)
