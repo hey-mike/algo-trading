@@ -3,14 +3,14 @@ import WebSocket from "ws";
 import { processData } from "../utils/processData";
 import { config } from "../config";
 import { cacheData } from "./cache.service";
-import { info, error } from "../utils/logger";
+import * as logger from "../utils/logger";
 import { rabbitMQPublisher } from "./rabbitMQ.publisher";
 
 export function initializeWebSocketConnection(): void {
   const ws = new WebSocket(config.WEB_SOCKET_URL);
 
   ws.on("open", () => {
-    info("WebSocket connection established");
+    logger.info("WebSocket connection established");
   });
 
   ws.on("message", async (data) => {
@@ -21,17 +21,17 @@ export function initializeWebSocketConnection(): void {
     try {
       await rabbitMQPublisher.publish(marketData);
     } catch (error) {
-      console.error("Failed to publish market data", error);
+      logger.error("Failed to publish market data", error);
     }
   });
 
   ws.on("error", (err) => {
-    error("WebSocket error:", err);
+    logger.error("WebSocket error:", err);
     // Handle WebSocket errors
   });
 
   ws.on("close", () => {
-    info("WebSocket connection closed");
+    logger.info("WebSocket connection closed");
     // Handle WebSocket connection closure
   });
 }
