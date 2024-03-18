@@ -1,12 +1,19 @@
 from fastapi import FastAPI
-from app.api.endpoints import strategy, health_check
+from app.api.routes import router
+from app.core.config import settings
+from app.core.database import database
+from app.core.rabbitmq import rabbitmq
 
-app = FastAPI()
+app = FastAPI(title=settings.PROJECT_NAME)
 
-# Include routers from endpoints
-app.include_router(strategy.router)
-app.include_router(health_check.router)
+@app.on_event("startup")
+async def startup_event():
+    await database.connect()
+    await rabbitmq.connect()
 
-@app.get("/")
-async def root():
-    return {"message": "Trading Strategy Service is online."}
+@app.on_event("shutdown")
+async def shutdown_event():
+    await database.disconnect()
+    await rabbitmq.disconnect()
+
+app.include_router(router)
