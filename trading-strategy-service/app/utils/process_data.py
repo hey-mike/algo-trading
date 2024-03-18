@@ -14,7 +14,7 @@ def on_market_data_received(ch, method, properties, body):
     """Callback function to process received market data."""
     try:
         data = json.loads(body)
-        logger.info(f"Received market data: {data}")
+        # logger.info(f"Received market data: {data}")
         
         # Here you can process the data, such as analyzing it for trading signals,
         # updating a database, or sending it to another service/component for further processing.
@@ -29,7 +29,7 @@ def process_market_data(data):
     """Process and analyze the market data."""
     # Placeholder for your market data processing logic.
     # This might involve analyzing for trading signals, updating databases, etc.
-    logger.info(f"Processing market data for symbol: {data['symbol']} at price: {data['price']}")
+    # logger.info(f"Processing market data for symbol: {data['symbol']} at price: {data['price']}")
     # Add your analysis or processing logic here.
 
 # Example usage with RabbitMQConsumer (Assuming RabbitMQConsumer is implemented as before)

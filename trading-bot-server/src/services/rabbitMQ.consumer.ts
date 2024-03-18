@@ -43,7 +43,7 @@ export class RabbitMQConsumer {
         config.RABBITMQ_MARKET_EXCHANGE,
         config.RABBITMQ_EXCHANGE_TYPE,
         {
-          durable: false,
+          durable: true,
         }
       );
       this.connectionAttempts = 0;
@@ -72,7 +72,7 @@ export class RabbitMQConsumer {
     const queue = "market_data_queue";
     const routingKey = "market_data.BTCUSDT";
 
-    await this.channel.assertQueue(queue, { durable: false });
+    await this.channel.assertQueue(queue, { durable: true });
     await this.channel.bindQueue(
       queue,
       config.RABBITMQ_MARKET_EXCHANGE,

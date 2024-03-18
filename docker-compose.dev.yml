@@ -54,7 +54,7 @@ services:
     command: npm run dev
     depends_on:
       - data-acquisition-service
-      # - trading-strategy-service
+      - trading-strategy-service
       # - order-execution-service
 
     environment:

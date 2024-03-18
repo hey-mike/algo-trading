@@ -25,7 +25,7 @@ rabbitMQConsumer
     });
   })
   .catch((error) => {
-    error("Failed to start the server:", error);
+    logger.error("Failed to start the server:", error);
     process.exit(1);
   });
 
