@@ -45,7 +45,7 @@ class RabbitMQPublisher {
       this.connection = await amqp.connect(this.url);
       this.channel = await this.connection.createChannel();
       await this.channel.assertExchange(this.exchange, this.exchangeType, {
-        durable: false,
+        durable: true,
       });
       info("Connected to RabbitMQ successfully");
       this.connectionAttempts = 0;

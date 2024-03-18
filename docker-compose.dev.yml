@@ -21,26 +21,23 @@ services:
     networks:
       - backend-network
 
-  # trading-strategy-service:
-  # build:
-  #   context: ./trading-strategy-service
-  #   dockerfile: Dockerfile.dev
-  # volumes:
-  #   - ./trading-strategy-service:/app
-  # ports:
-  #   - "5001:5001"
-  # environment:
-  #   - REDIS_HOST=redis
-  #   - REDIS_PORT=6379
-  #   - REDIS_DB=tss-cache
-  #   - NODE_ENV=development
-  #   - TSS_RABBITMQ_URL=amqp://rabbitmq
-  # command: uvicorn app.main:app --host 0.0.0.0 --port 5001 --reload
-  # depends_on: #it doesn't guarantee RabbitMQ is ready to accept connections.
-  #   - redis
-  #   - rabbitmq
-  # networks:
-  #   - backend-network
+  trading-strategy-service:
+    build:
+      context: ./trading-strategy-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./trading-strategy-service:/app
+    ports:
+      - "5001:5001"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=tss-cache
+      - NODE_ENV=development
+      - TSS_RABBITMQ_URL=amqp://rabbitmq
+    command: uvicorn app.main:app --host 0.0.0.0 --port 5001 --reload
+    networks:
+      - backend-network
 
   # order-execution-service:
   #   build: ./order-execution-service

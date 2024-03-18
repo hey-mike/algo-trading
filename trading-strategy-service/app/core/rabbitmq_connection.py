@@ -39,8 +39,9 @@ class RabbitMQConnection:
         """Attempt to connect to RabbitMQ with exponential backoff."""
         for attempt in range(max_attempts):
             try:
+                parameters = pika.URLParameters(settings.RABBITMQ_URL)
                 cls._connection = pika.BlockingConnection(pika.URLParameters(settings.RABBITMQ_URL))
-                logger.info("RabbitMQ connection established.")
+                logger.info(f"RabbitMQ connection established to {settings.RABBITMQ_URL}.")
                 break  # Exit the loop if connection is successful
             except AMQPConnectionError as error:
                 logger.error(f"Failed to connect to RabbitMQ: {error}")
@@ -53,6 +54,8 @@ class RabbitMQConnection:
                     logger.error("Maximum connection attempts reached. Giving up.")
                     cls._connection = None
                     raise  # Re-raise the last exception or a custom exception
+            except Exception as error:
+                logger.error(f"Failed to connect to RabbitMQ {settings.RABBITMQ_URL}: {error}")
 
     @classmethod
     def close_connection(cls):

@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()  # Load variables from .env file (optional)
 class Settings(BaseSettings):
+    ENVIRONMENT: str = Field(default="developement", env="ENVIRONMENT")
     PROJECT_NAME: str = Field(default="Trading Strategy Service", env="PROJECT_NAME")
     DATABASE_URL: str = Field(default="mongodb://localhost:27017", env="DATABASE_URL")
     RABBITMQ_URL: str = Field(default="amqp://guest:guest@localhost", env="RABBITMQ_URL")
