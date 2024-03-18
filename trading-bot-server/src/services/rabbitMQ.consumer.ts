@@ -90,7 +90,7 @@ export class RabbitMQConsumer {
               const marketData: MarketData = JSON.parse(
                 message.content.toString("utf8")
               );
-              logger.info("Received market data:", marketData);
+              // logger.info("Received market data:", marketData);
               this.processMarketData(marketData);
               this.channel?.ack(message);
             }

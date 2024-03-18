@@ -1,4 +1,5 @@
 # rabbitmq_consumer.py
+import json
 from pika.exceptions import AMQPError, ChannelClosedByBroker
 from app.utils.logging import get_logger
 from app.core.rabbitmq_connection import RabbitMQConnection
@@ -32,3 +33,4 @@ class RabbitMQConsumer:
         if self.channel and self.channel.is_open:
             self.channel.stop_consuming()
             self.logger.info("Stopped consuming messages.")
+

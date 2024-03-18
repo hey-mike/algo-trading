@@ -44,6 +44,7 @@ class RabbitMQConnection:
                 break  # Exit the loop if connection is successful
             except AMQPConnectionError as error:
                 logger.error(f"Failed to connect to RabbitMQ: {error}")
+                logger.error(f"Connection to url: {settings.RABBITMQ_URL}")
                 if attempt < max_attempts - 1:  # Avoid sleeping on the last attempt
                     sleep_time = exponential_backoff_with_jitter(attempt)
                     logger.info(f"Retrying in {sleep_time:.2f} seconds...")

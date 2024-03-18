@@ -29,19 +29,17 @@ Ensure you have Python 3.7 or newer installed on your system.
 
 Install the required Python packages using the following command:
 
-bash
-
-Copy code
+```bash
 pip install -r requirements.txt
+```
 
 ### Running the Service
 
 Start the service with Uvicorn:
 
-bash
-
-Copy code
+```bash
 uvicorn app.main:app --reload
+```
 
 The `--reload` flag is recommended for development as it automatically reloads the server on code changes.
 
@@ -49,17 +47,15 @@ The `--reload` flag is recommended for development as it automatically reloads t
 
 ### Adding a Trading Strategy
 
-bash
-
-Copy code
+```bash
 curl -X 'POST' \\ 'http://127.0.0.1:8000/strategies/' \\ -H 'accept: application/json' \\ -H 'Content-Type: application/json' \\ -d '{ "name": "Simple Moving Average", "parameters": { "period": 14 }, "description": "A strategy based on simple moving average" }'
+```
 
 ### Listing All Trading Strategies
 
-bash
-
-Copy code
+```bash
 curl -X 'GET' \\ 'http://127.0.0.1:8000/strategies/' \\ -H 'accept: application/json'
+```
 
 ## Integration with RabbitMQ
 
@@ -71,4 +67,4 @@ We welcome contributions to the Trading Strategy Service! Please feel free to su
 
 ## License
 
-\[Your preferred license\]
+MIT
